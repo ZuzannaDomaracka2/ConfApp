@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ConfApp</string>
+    <string name="TextView">Zaloguj się</string>
+    <string name="ImageView">ic-log</string>
 </resources>
