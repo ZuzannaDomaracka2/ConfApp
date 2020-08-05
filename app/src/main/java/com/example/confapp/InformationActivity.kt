@@ -22,15 +22,21 @@ class InformationActivity : AppCompatActivity() {
         name_text.text="Witaj " +currentUser?.displayName
 
         Glide.with(this).load(currentUser?.photoUrl).into(profile_image);
+
         sign_out_btn.setOnClickListener{
-            mAuth.signOut()
-            val intent = Intent(this,SignInActivity::class.java)
-            startActivity(intent)
-            finish()
+            currentUser?.delete()?.addOnCompleteListener{
+
+
+                val intent = Intent(this, SignInActivity::class.java)
+                startActivity(intent)
+               // finish()
+
+            }
+            }
+
         }
 
 
 
 
     }
-}

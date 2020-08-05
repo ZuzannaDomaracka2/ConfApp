@@ -80,7 +80,7 @@ class SignInActivity : AppCompatActivity() {
                     Log.d("SignInActivity", "signInWithCredential:success")
                     val intent = Intent(this, InformationActivity::class.java)
                     startActivity(intent)
-                    finish()
+                    //finish()
                 }
                 else {
                     Log.d("SignInActivity", "signInWithCredential:failure")

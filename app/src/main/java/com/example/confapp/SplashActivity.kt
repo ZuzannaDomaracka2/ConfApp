@@ -19,7 +19,7 @@ class SplashActivity : AppCompatActivity() {
 
         Handler().postDelayed({
             if(user != null){
-                val informationIntent = Intent(this, InformationActivity::class.java)
+                val informationIntent = Intent(this,InformationActivity::class.java)
                 startActivity(informationIntent)
                 finish()
             }else{
