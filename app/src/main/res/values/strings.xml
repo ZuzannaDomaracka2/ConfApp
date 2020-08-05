@@ -2,4 +2,5 @@
     <string name="app_name">ConfApp</string>
     <string name="TextView">Zaloguj się</string>
     <string name="ImageView">ic-log</string>
+    <string name="Logowanie_Google">Zaloguj przez Google</string>
 </resources>
