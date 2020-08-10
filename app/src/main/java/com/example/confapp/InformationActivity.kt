@@ -11,10 +11,7 @@ import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.EmailAuthProvider
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.*
 import kotlinx.android.synthetic.main.activity_information.*
 
 
@@ -39,8 +36,9 @@ class InformationActivity : AppCompatActivity() {
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
+        name_text.text=currentUser?.email
 
-        name_text.text = "Witaj, " + currentUser?.displayName
+       // name_text.text = "Witaj, " + currentUser?.displayName
 
         Glide.with(this).load(currentUser?.photoUrl).into(profile_image)
 
@@ -50,13 +48,16 @@ class InformationActivity : AppCompatActivity() {
             }
 
     private fun removeUser() {
+
         mAuth = FirebaseAuth.getInstance()
         val currentUser = mAuth.currentUser
         val credential = EmailAuthProvider.getCredential("user@example.com", "password")
         currentUser?.reauthenticate(credential)?.addOnCompleteListener {
             googleSignInClient?.signOut()
             LoginManager.getInstance().logOut()
-            //FirebaseAuth.getInstance().signOut()
+
+           // mAuth.signOut()
+
 
 
             currentUser.delete().addOnCompleteListener(this) { task ->
