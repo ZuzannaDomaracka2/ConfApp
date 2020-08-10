@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -21,12 +22,12 @@ import java.util.*
 
 
 class SignInActivity : AppCompatActivity() {
-    //val provider = OAuthProvider.newBuilder("github.com")
+    val provider = OAuthProvider.newBuilder("github.com")
     private lateinit var mAuth:FirebaseAuth
     var googleSignInClient:GoogleSignInClient?=null
     var callbackManager=CallbackManager.Factory.create()
     private val RC_SIGN_IN=1
-    //val provider = OAuthProvider.newBuilder("github.com")
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +56,8 @@ class SignInActivity : AppCompatActivity() {
             signInFacebook()
         }
         gh_button.setOnClickListener {
-         // SIgnInGithub()
+         // SignInGithub()
+            firebaseAuthWithGithub()
         }
 
 
@@ -121,7 +123,7 @@ class SignInActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         callbackManager.onActivityResult(requestCode,resultCode,data)
-        val provider =  OAuthProvider.newBuilder("github.com")
+
 
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -154,6 +156,34 @@ class SignInActivity : AppCompatActivity() {
                     Log.d("SignInActivity", "signInWithCredential:failure")
                 }
             }
+    }
+    fun firebaseAuthWithGithub()
+
+    {
+        val pending = FirebaseAuth.getInstance().pendingAuthResult
+        if (pending != null) {
+            pending.addOnSuccessListener { authResult ->
+                //Log.d(TAG, "checkPending:onSuccess:$authResult")
+                // Get the user profile with authResult.getUser() and
+                // authResult.getAdditionalUserInfo(), and the ID
+                // token from Apple with authResult.getCredential().
+            }.addOnFailureListener { e ->
+              //  Log.w(TAG, "checkPending:onFailure", e)
+            }
+        } else {
+            FirebaseAuth.getInstance().startActivityForSignInWithProvider(this, provider.build())
+                .addOnSuccessListener { authResult ->
+                    // Sign-in successful!
+                   // Log.d(TAG, "activitySignIn:onSuccess:${authResult.user}")
+                    val user = authResult.user
+                    // ...
+                }
+                .addOnFailureListener { e ->
+                   // Log.w(TAG, "activitySignIn:onFailure", e)
+                }
+            //Log.d(TAG, "pending: null")
+        }
+
     }
 
     fun firebaseAuthWithFacebook(result:LoginResult?){
