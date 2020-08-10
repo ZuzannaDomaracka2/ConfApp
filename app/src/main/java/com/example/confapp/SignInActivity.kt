@@ -1,42 +1,32 @@
 package com.example.confapp
 
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
+import com.facebook.login.LoginBehavior
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.*
 import kotlinx.android.synthetic.main.acivity_sign_in.*
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 import java.util.*
 
 
-var googleSignInClient:GoogleSignInClient?=null
+
 class SignInActivity : AppCompatActivity() {
-
+    //val provider = OAuthProvider.newBuilder("github.com")
     private lateinit var mAuth:FirebaseAuth
+    var googleSignInClient:GoogleSignInClient?=null
     var callbackManager=CallbackManager.Factory.create()
-
-
-    companion object{
-        private const val RC_SIGN_IN=120
-    }
-
+    private val RC_SIGN_IN=1
+    //val provider = OAuthProvider.newBuilder("github.com")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,40 +43,72 @@ class SignInActivity : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
+
         mAuth = FirebaseAuth.getInstance()
 
 
         sign_in_btn.setOnClickListener {
-            signIn()
+            signInGoogle()
         }
+
         fb_button.setOnClickListener {
-            LoginManager.getInstance().logInWithReadPermissions(this,Arrays.asList("email","public_profile"))
-
-            LoginManager.getInstance().registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
-                override fun onSuccess(result: LoginResult?) {
-
-                }
-
-                override fun onCancel() {
-
-                }
-
-                override fun onError(error: FacebookException?) {
-
-                }
-
-            })
-            }
+            signInFacebook()
+        }
+        gh_button.setOnClickListener {
+         // SIgnInGithub()
         }
 
 
+    }
 
 
-    private fun signIn() {
+
+
+    private fun infDisplay(){
+        var currentUser=FirebaseAuth.getInstance().currentUser
+        if(currentUser!=null) {
+            val intent = Intent(this, InformationActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+    }
+
+
+
+    private fun signInGoogle() {
         val signInIntent = googleSignInClient?.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
 
     }
+
+
+
+    private fun signInFacebook()
+    {
+
+        LoginManager.getInstance().loginBehavior=LoginBehavior.WEB_VIEW_ONLY
+        LoginManager.getInstance().logInWithReadPermissions(this,Arrays.asList("email","public_profile"))
+
+        LoginManager.getInstance().registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+
+            override fun onSuccess(result: LoginResult?) {
+                firebaseAuthWithFacebook(result)
+
+            }
+
+            override fun onCancel() {
+
+            }
+
+            override fun onError(error: FacebookException?) {
+
+            }
+
+        })
+
+
+}
 
 
 
@@ -99,7 +121,7 @@ class SignInActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         callbackManager.onActivityResult(requestCode,resultCode,data)
-
+        val provider =  OAuthProvider.newBuilder("github.com")
 
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -119,7 +141,6 @@ class SignInActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         mAuth.signInWithCredential(credential)
@@ -127,14 +148,34 @@ class SignInActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
 
                     Log.d("SignInActivity", "signInWithCredential:success")
-                    val intent = Intent(this, InformationActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    infDisplay()
                 }
                 else {
                     Log.d("SignInActivity", "signInWithCredential:failure")
                 }
             }
     }
+
+    fun firebaseAuthWithFacebook(result:LoginResult?){
+        val credential = FacebookAuthProvider.getCredential(result?.accessToken?.token!!)
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+
+                    infDisplay()
+
+                } else {
+
+                    print("Authentication failed")
+
+                }
+
+            }
+
+    }
+
+
+
+
 
 }

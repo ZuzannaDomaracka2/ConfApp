@@ -7,6 +7,8 @@
 
     <string name="facebook_app_id">589814271729981</string>
     <string name="fb_login_protocol_scheme">fb589814271729981</string>
-
+    <string name="github_app_id">b92a4bfcd7f545a44146</string>
+    <string name="github_app_secret">6f0931233b6b6505da752bf1bfc3fe0b50846dc7</string>
+    <string name="github_app_url">https://confapp-88132.firebaseapp.com/__/auth/handler</string>
 
 </resources>
