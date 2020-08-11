@@ -1,9 +1,9 @@
 package com.example.confapp
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -15,25 +15,32 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.*
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.acivity_sign_in.*
 import java.util.*
 
 
 class SignInActivity : AppCompatActivity() {
-    //val provider = OAuthProvider.newBuilder("github.com")
-    private lateinit var mAuth:FirebaseAuth
-    var googleSignInClient:GoogleSignInClient?=null
-    var callbackManager=CallbackManager.Factory.create()
-    private val RC_SIGN_IN=1
+    companion object {
+        val TAG = "SignInActivity"
+    }
 
+    //val provider = OAuthProvider.newBuilder("github.com")
+    private lateinit var mAuth: FirebaseAuth
+    var googleSignInClient: GoogleSignInClient? = null
+    var callbackManager = CallbackManager.Factory.create()
+    private val RC_SIGN_IN = 1
+    var githubAuthProvider:GithubAuthProvider?=null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.acivity_sign_in)
         supportActionBar?.hide()
-
 
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -55,57 +62,63 @@ class SignInActivity : AppCompatActivity() {
             signInFacebook()
         }
         gh_button.setOnClickListener {
-         signInGithub()
+            signInGithub()
             finish()
         }
 
 
     }
+
     private fun signInGithub() {
 
+
+
         val provider = OAuthProvider.newBuilder("github.com")
-        // Target specific email with login hint.
-        //provider.addCustomParameter("login", "your-email@gmail.com")
 
+        val pendingResultTask: Task<AuthResult>? = FirebaseAuth.getInstance().getPendingAuthResult()
+        if (pendingResultTask != null) {
 
-        val pending = mAuth.pendingAuthResult
-        if (pending != null) {
-            pending.addOnSuccessListener { authResult ->
-                authResult.credential
-
-               // Log.d(TAG, "checkPending:onSuccess:$authResult")
-                // Get the user profile with authResult.getUser() and
-                // authResult.getAdditionalUserInfo(), and the ID
-                // token from Apple with authResult.getCredential().
-            }.addOnFailureListener { e ->
-                //Log.w(TAG, "checkPending:onFailure", e)
-            }
+            // There's something already here! Finish the sign-in for your user.
+            pendingResultTask
+                .addOnSuccessListener(
+                    OnSuccessListener<AuthResult?> {
+                        Log.d(TAG, "success $it")
+                        // User is signed in.
+                        // IdP data available in
+                        // authResult.getAdditionalUserInfo().getProfile().
+                        // The OAuth access token can also be retrieved:
+                        // authResult.getCredential().getAccessToken().
+                    })
+                .addOnFailureListener(
+                    OnFailureListener {
+                        // Handle failure.
+                        Log.d(TAG, "error", it)
+                    })
         } else {
-
-        //val credential = GithubAuthProvider.getCredential()
-        mAuth.startActivityForSignInWithProvider(this, provider.build())
-            .addOnSuccessListener { authResult ->
-                //authResult.credential
-                //authResult.getCredential()
-                infDisplay()
-                // Sign-in successful!
-                //Log.d(TAG, "activitySignIn:onSuccess:${authResult.user}")
-                // val user = authResult.user
-            }
-            .addOnFailureListener { e ->
-                //Log.w(TAG, "activitySignIn:onFailure", e)
-            }
-        //Log.d(TAG, "pending: null")
-
-
+            // There's no pending result so you need to start the sign-in flow.
+            // See below.\
+            FirebaseAuth.getInstance()
+                .startActivityForSignInWithProvider( /* activity= */this, provider.build())
+                .addOnSuccessListener(
+                    OnSuccessListener<AuthResult?> {
+                        Log.d(TAG, "success $it")
+                        infDisplay()
+                        // User is signed in.
+                        // IdP data available in
+                        // authResult.getAdditionalUserInfo().getProfile().
+                        // The OAuth access token can also be retrieved:
+                        // authResult.getCredential().getAccessToken().
+                    })
+                .addOnFailureListener(
+                    OnFailureListener {
+                        // Handle failure.
+                        Log.d(TAG, "error", it)
+                    })
+        }
     }
-    }
-
-
-
 
     private fun infDisplay(){
-        var currentUser=FirebaseAuth.getInstance().currentUser
+        val currentUser=FirebaseAuth.getInstance().currentUser
         if(currentUser!=null) {
             val intent = Intent(this, InformationActivity::class.java)
             startActivity(intent)
@@ -123,6 +136,9 @@ class SignInActivity : AppCompatActivity() {
         startActivityForResult(signInIntent, RC_SIGN_IN)
 
     }
+
+
+
 
 
 
@@ -150,7 +166,10 @@ class SignInActivity : AppCompatActivity() {
         })
 
 
+
+
 }
+
 
 
 
