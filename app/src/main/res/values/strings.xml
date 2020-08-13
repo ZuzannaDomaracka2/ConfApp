@@ -3,7 +3,10 @@
     <string name="TextView">Zaloguj się</string>
     <string name="ImageView">ic-log</string>
     <string name="Log_in_Google">Zaloguj przez Google</string>
-    <string name="Log_out_Google">Wyloguj</string>
+    <string name="Log_in_Facebook">Zaloguj przez Facebook</string>
+    <string name="Log_in_GitHub">Zaloguj przez GitHub</string>
+    <string name="Log_in_LinkedIn">Zaloguj przez LinkedIn</string>
+    <string name="Log_out">Wyloguj</string>
 
     <string name="facebook_app_id">589814271729981</string>
     <string name="fb_login_protocol_scheme">fb589814271729981</string>

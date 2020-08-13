@@ -10,9 +10,11 @@
         android:id="@+id/name_text"
         android:layout_width="170dp"
         android:layout_height="55dp"
-        android:layout_marginTop="108dp"
+        android:layout_marginTop="84dp"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.809"
+        app:layout_constraintHorizontal_bias="0.607"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toEndOf="@+id/profile_image"
@@ -32,22 +34,28 @@
         android:id="@+id/sign_out_btn"
         android:layout_width="143dp"
         android:layout_height="50dp"
-        android:background="#DBE3DE"
-        android:text="@string/Log_out_Google"
+        android:background="@drawable/rounded_logout_btn"
+        android:text="@string/Log_out"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.876"
+        app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name_text"
-        app:layout_constraintVertical_bias="0.038" />
+        app:layout_constraintVertical_bias="0.025" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/myRecyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="96dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@+id/sign_out_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
