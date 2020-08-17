@@ -29,7 +29,7 @@ class SignInActivity : AppCompatActivity() {
         val TAG = "SignInActivity"
     }
 
-    //val provider = OAuthProvider.newBuilder("github.com")
+
     private lateinit var mAuth: FirebaseAuth
     var googleSignInClient: GoogleSignInClient? = null
     var callbackManager = CallbackManager.Factory.create()
@@ -120,7 +120,7 @@ class SignInActivity : AppCompatActivity() {
     private fun infDisplay(){
         val currentUser=FirebaseAuth.getInstance().currentUser
         if(currentUser!=null) {
-            val intent = Intent(this, InformationActivity::class.java)
+            val intent = Intent(this, InformationActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
             finish()
         }
@@ -237,6 +237,8 @@ class SignInActivity : AppCompatActivity() {
             }
 
     }
+
+
 
 
 
