@@ -63,7 +63,7 @@ class SignInActivity : AppCompatActivity() {
         }
         gh_button.setOnClickListener {
             signInGithub()
-            finish()
+
         }
 
 

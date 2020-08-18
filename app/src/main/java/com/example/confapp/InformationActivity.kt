@@ -1,5 +1,6 @@
 package com.example.confapp
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -11,21 +12,26 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GithubAuthCredential
+import com.google.firebase.auth.GithubAuthProvider
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_information.*
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.math.sign
 
 
 class InformationActivity : AppCompatActivity() {
 
-
+    private var check=1
     private lateinit var mAuth: FirebaseAuth
     var googleSignInClient: GoogleSignInClient? = null
+    var githubProvider:GithubAuthProvider?=null
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
@@ -37,9 +43,6 @@ class InformationActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         val currentUser = mAuth.currentUser
 
-
-
-
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -49,14 +52,13 @@ class InformationActivity : AppCompatActivity() {
 
 
 
-        name_text.text = "Witaj" + currentUser?.displayName
+        name_text.text = "Witaj, " + currentUser?.displayName
         Glide.with(this).load(currentUser?.photoUrl).into(profile_image)
         saveUserData()
         readUsers()
 
 
         sign_out_btn.setOnClickListener {
-
 
             val firebaseUserId=FirebaseAuth.getInstance().currentUser!!.uid
             FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUserId).removeValue()
@@ -65,7 +67,6 @@ class InformationActivity : AppCompatActivity() {
 
         }
     }
-
 
 
     private fun removeUser() {
@@ -77,26 +78,28 @@ class InformationActivity : AppCompatActivity() {
 
 
 
+
         val credential = EmailAuthProvider.getCredential("user@example.com", "password")
         currentUser?.reauthenticate(credential)?.addOnCompleteListener {
 
             googleSignInClient?.signOut()
             LoginManager.getInstance().logOut()
+            
+
 
 
             currentUser.delete().addOnCompleteListener(this) { task ->
 
 
-
-
                 if (task.isSuccessful) {
 
                     println("Konto zostało usunięte")
+                    check=0
                     val intent = Intent(this, SignInActivity::class.java)
                     startActivity(intent)
                     finish()
-
-                } else {
+                }
+                else {
                     println("Konto nie zostało usunięte")
                 }
             }
@@ -128,36 +131,30 @@ class InformationActivity : AppCompatActivity() {
                 Log.d("InformationActivity", "error")
             }
     }
+
     private fun setStatus(status:String){
+
         val uid = FirebaseAuth.getInstance().uid?:""
         val mRef = FirebaseDatabase.getInstance().getReference("/Users/$uid")
         val hashMap = HashMap<String,Any>()
         hashMap["status"]=status
         mRef.updateChildren(hashMap)
-
-
     }
 
-
-
     override fun onResume() {
+
         super.onResume()
-        setStatus("online")
-
-
+        if(check==1) {
+            setStatus("online")
+        }
     }
 
     override fun onPause() {
         super.onPause()
-       setStatus("offline")
-
-
-
-
-
-
+        if(check==1) {
+            setStatus("offline")
+        }
     }
-
 
 
     private fun readUsers(){
@@ -179,8 +176,7 @@ class InformationActivity : AppCompatActivity() {
 
 
                     }
-                    adapter.notifyDataSetChanged()
-
+                    //adapter.notifyDataSetChanged()
 
                 }
                 myRecyclerview.adapter=adapter
@@ -192,6 +188,5 @@ class InformationActivity : AppCompatActivity() {
             }
         })
     }
-
 
 }
