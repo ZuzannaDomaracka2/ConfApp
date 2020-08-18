@@ -83,8 +83,9 @@ class InformationActivity : AppCompatActivity() {
         currentUser?.reauthenticate(credential)?.addOnCompleteListener {
 
             googleSignInClient?.signOut()
-            LoginManager.getInstance().logOut()
             
+            LoginManager.getInstance().logOut()
+
 
 
 
