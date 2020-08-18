@@ -3,10 +3,7 @@ package com.example.confapp
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -23,6 +20,7 @@ import kotlin.collections.HashMap
 
 
 class InformationActivity : AppCompatActivity() {
+
 
     private lateinit var mAuth: FirebaseAuth
     var googleSignInClient: GoogleSignInClient? = null
@@ -50,14 +48,21 @@ class InformationActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
 
-        name_text.text = "Witaj, " + currentUser?.displayName
+
+        name_text.text = "Witaj" + currentUser?.displayName
         Glide.with(this).load(currentUser?.photoUrl).into(profile_image)
         saveUserData()
         readUsers()
 
 
         sign_out_btn.setOnClickListener {
+
+
+            val firebaseUserId=FirebaseAuth.getInstance().currentUser!!.uid
+            FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUserId).removeValue()
             removeUser()
+
+
         }
     }
 
@@ -71,19 +76,23 @@ class InformationActivity : AppCompatActivity() {
         val currentUser = mAuth.currentUser
 
 
+
         val credential = EmailAuthProvider.getCredential("user@example.com", "password")
         currentUser?.reauthenticate(credential)?.addOnCompleteListener {
 
             googleSignInClient?.signOut()
             LoginManager.getInstance().logOut()
 
+
             currentUser.delete().addOnCompleteListener(this) { task ->
+
+
+
 
                 if (task.isSuccessful) {
 
                     println("Konto zostało usunięte")
-
-                    val intent = Intent(this, SignInActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    val intent = Intent(this, SignInActivity::class.java)
                     startActivity(intent)
                     finish()
 
@@ -93,6 +102,8 @@ class InformationActivity : AppCompatActivity() {
             }
         }
     }
+
+
 
     private fun saveUserData(){
 
@@ -127,19 +138,22 @@ class InformationActivity : AppCompatActivity() {
 
     }
 
+
+
     override fun onResume() {
         super.onResume()
         setStatus("online")
-        val adapter=GroupAdapter<ViewHolder>()
-
 
 
     }
 
     override fun onPause() {
         super.onPause()
-        setStatus("offline")
-        val adapter=GroupAdapter<ViewHolder>()
+       setStatus("offline")
+
+
+
+
 
 
     }
@@ -149,8 +163,8 @@ class InformationActivity : AppCompatActivity() {
     private fun readUsers(){
 
         val mRef = FirebaseDatabase.getInstance().getReference("/Users/")
-        val firebaseuserID=FirebaseAuth.getInstance().currentUser!!.uid
-        mRef.addListenerForSingleValueEvent(object :ValueEventListener{
+        val firebaseUserId=FirebaseAuth.getInstance().currentUser!!.uid
+        mRef.addValueEventListener(object :ValueEventListener{
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 val adapter=GroupAdapter<ViewHolder>()
@@ -159,7 +173,7 @@ class InformationActivity : AppCompatActivity() {
                     val user = it.getValue(Users::class.java)
 
 
-                    if (!(user!!.uid).equals(firebaseuserID)) {
+                    if ((user!!.uid) != firebaseUserId) {
 
                         adapter.add(UserDisplay(user))
 
@@ -180,10 +194,4 @@ class InformationActivity : AppCompatActivity() {
     }
 
 
-    }
-
-
-
-
-
-
+}

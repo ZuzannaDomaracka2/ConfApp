@@ -14,14 +14,13 @@ import kotlin.coroutines.coroutineContext
 class UserDisplay(val user:Users): Item<ViewHolder>() {
 
 
+
     override fun bind(viewHolder: ViewHolder, position: Int) {
-
-
-
 
         viewHolder.itemView.each_user_name.text = user.name
 
         Picasso.get().load(user.urlPhoto).into(viewHolder.itemView.each_user_photo)
+
 
 
         if (user.status == "online"){
