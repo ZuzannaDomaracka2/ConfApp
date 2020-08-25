@@ -3,7 +3,6 @@ package com.example.confapp
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -18,29 +17,36 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
+import com.google.auth.oauth2.GoogleCredentials
+import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.*
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.acivity_sign_in.*
+import java.io.FileInputStream
 import java.util.*
 
 
-class SignInActivity : AppCompatActivity() {
+class SignInActivity : AppCompatActivity()  {
+
     companion object {
         val TAG = "SignInActivity"
     }
+
 
 
     private lateinit var mAuth: FirebaseAuth
     var googleSignInClient: GoogleSignInClient? = null
     var callbackManager = CallbackManager.Factory.create()
     private val RC_SIGN_IN = 1
-    var githubAuthProvider:GithubAuthProvider?=null
+    val uid = FirebaseAuth.getInstance().uid?:""
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.acivity_sign_in)
         supportActionBar?.hide()
+
 
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -54,6 +60,7 @@ class SignInActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
 
 
+
         sign_in_btn.setOnClickListener {
             signInGoogle()
         }
@@ -65,13 +72,34 @@ class SignInActivity : AppCompatActivity() {
             signInGithub()
 
         }
+        lin_button.setOnClickListener {
+            //signInLinkedIn()
+        }
 
 
     }
+    // Logowanie LinkedIn
+
+    private fun signInLinkedIn() {
+
+        val serviceAccount = FileInputStream("path/to/serviceAccountKey.json")
+
+        val options =
+            FirebaseOptions.Builder()
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .setDatabaseUrl("https://confapp-88132.firebaseio.com")
+                .build()
+
+        FirebaseApp.initializeApp(options)
+        
+    }
+
+
+
+
+
 
     private fun signInGithub() {
-
-
 
         val provider = OAuthProvider.newBuilder("github.com")
 
@@ -116,6 +144,10 @@ class SignInActivity : AppCompatActivity() {
                     })
         }
     }
+
+
+
+
 
     private fun infDisplay(){
         val currentUser=FirebaseAuth.getInstance().currentUser
@@ -169,12 +201,6 @@ class SignInActivity : AppCompatActivity() {
 
 
     }
-
-
-
-
-
-
 
 
 
@@ -239,9 +265,6 @@ class SignInActivity : AppCompatActivity() {
     }
 
 
+    }
 
 
-
-
-
-}

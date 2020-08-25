@@ -16,6 +16,7 @@
     <string name="github_app_url">https://confapp-88132.firebaseapp.com/__/auth/handler</string>
     <string name="linkedin_app_id">77c6gbjtncoqqj</string>
     <string name="linkedin_app_secret">mLsHPzmFGU5nFiRy</string>
+    <string name="linkedin_app_url">https://confapp-88132.firebaseapp.com/__/auth/handler</string>
 
 
 </resources>

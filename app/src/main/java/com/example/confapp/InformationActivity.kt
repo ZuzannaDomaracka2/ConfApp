@@ -12,15 +12,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GithubAuthCredential
-import com.google.firebase.auth.GithubAuthProvider
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_information.*
-import java.util.*
-import kotlin.collections.HashMap
-import kotlin.math.sign
 
 
 class InformationActivity : AppCompatActivity() {
@@ -28,7 +26,7 @@ class InformationActivity : AppCompatActivity() {
     private var check=1
     private lateinit var mAuth: FirebaseAuth
     var googleSignInClient: GoogleSignInClient? = null
-    var githubProvider:GithubAuthProvider?=null
+
 
 
     @SuppressLint("SetTextI18n")
@@ -83,11 +81,8 @@ class InformationActivity : AppCompatActivity() {
         currentUser?.reauthenticate(credential)?.addOnCompleteListener {
 
             googleSignInClient?.signOut()
-            
+
             LoginManager.getInstance().logOut()
-
-
-
 
             currentUser.delete().addOnCompleteListener(this) { task ->
 
@@ -174,10 +169,7 @@ class InformationActivity : AppCompatActivity() {
                     if ((user!!.uid) != firebaseUserId) {
 
                         adapter.add(UserDisplay(user))
-
-
                     }
-                    //adapter.notifyDataSetChanged()
 
                 }
                 myRecyclerview.adapter=adapter
