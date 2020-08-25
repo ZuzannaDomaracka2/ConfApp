@@ -17,12 +17,9 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
-import com.google.auth.oauth2.GoogleCredentials
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.*
 import kotlinx.android.synthetic.main.acivity_sign_in.*
-import java.io.FileInputStream
+
 import java.util.*
 
 
@@ -73,28 +70,11 @@ class SignInActivity : AppCompatActivity()  {
 
         }
         lin_button.setOnClickListener {
-            //signInLinkedIn()
+
         }
 
 
     }
-    // Logowanie LinkedIn
-
-    private fun signInLinkedIn() {
-
-        val serviceAccount = FileInputStream("path/to/serviceAccountKey.json")
-
-        val options =
-            FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl("https://confapp-88132.firebaseio.com")
-                .build()
-
-        FirebaseApp.initializeApp(options)
-        
-    }
-
-
 
 
 
