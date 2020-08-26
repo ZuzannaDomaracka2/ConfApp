@@ -47,9 +47,6 @@ class SignInActivity : AppCompatActivity()  {
         setContentView(R.layout.acivity_sign_in)
         supportActionBar?.hide()
 
-       crash_btn.setOnClickListener {
-          crash()
-       }
 
 
 
@@ -78,9 +75,7 @@ class SignInActivity : AppCompatActivity()  {
         }
     }
 
-private fun crash(){
-    throw RuntimeException("App crashed")
-}
+
 
 
 

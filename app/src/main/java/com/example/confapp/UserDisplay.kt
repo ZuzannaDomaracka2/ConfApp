@@ -2,7 +2,7 @@ package com.example.confapp
 
 import android.content.ClipData
 import android.view.View
-import com.bumptech.glide.Glide
+//import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.Item

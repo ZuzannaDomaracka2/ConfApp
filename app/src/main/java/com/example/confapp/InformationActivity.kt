@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -23,7 +22,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_information.*
 import kotlinx.android.synthetic.main.user_row.view.*
-import java.net.CookieManager
+
 
 
 class InformationActivity : AppCompatActivity() {
@@ -57,7 +56,6 @@ class InformationActivity : AppCompatActivity() {
 
         name_text.text = "Hello, " + currentUser?.displayName
         Picasso.get().load(currentUser?.photoUrl).into(profile_image)
-        //Glide.with(this).load(currentUser?.photoUrl).into(profile_image)
 
         saveUserData()
         readUsers()
@@ -75,7 +73,7 @@ class InformationActivity : AppCompatActivity() {
 
 
     private fun removeUser() {
-        
+
         mAuth = FirebaseAuth.getInstance()
         val currentUser = mAuth.currentUser
 
