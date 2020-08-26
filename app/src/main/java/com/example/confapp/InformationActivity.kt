@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.facebook.login.LoginManager
@@ -12,13 +13,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GithubAuthProvider
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_information.*
+import kotlinx.android.synthetic.main.user_row.view.*
+import java.net.CookieManager
 
 
 class InformationActivity : AppCompatActivity() {
@@ -50,13 +55,15 @@ class InformationActivity : AppCompatActivity() {
 
 
 
-        name_text.text = "Witaj, " + currentUser?.displayName
-        Glide.with(this).load(currentUser?.photoUrl).into(profile_image)
+        name_text.text = "Hello, " + currentUser?.displayName
+        Picasso.get().load(currentUser?.photoUrl).into(profile_image)
+        //Glide.with(this).load(currentUser?.photoUrl).into(profile_image)
+
         saveUserData()
         readUsers()
 
 
-        sign_out_btn.setOnClickListener {
+        sign_out_button.setOnClickListener {
 
             val firebaseUserId=FirebaseAuth.getInstance().currentUser!!.uid
             FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUserId).removeValue()
@@ -68,13 +75,9 @@ class InformationActivity : AppCompatActivity() {
 
 
     private fun removeUser() {
-
-
-
+        
         mAuth = FirebaseAuth.getInstance()
         val currentUser = mAuth.currentUser
-
-
 
 
         val credential = EmailAuthProvider.getCredential("user@example.com", "password")
@@ -88,15 +91,14 @@ class InformationActivity : AppCompatActivity() {
 
 
                 if (task.isSuccessful) {
-
-                    println("Konto zostało usunięte")
+                    Toast.makeText(this,"Account deleted", Toast.LENGTH_SHORT).show();
                     check=0
                     val intent = Intent(this, SignInActivity::class.java)
                     startActivity(intent)
                     finish()
                 }
                 else {
-                    println("Konto nie zostało usunięte")
+                    Toast.makeText(this,"Error, try again", Toast.LENGTH_SHORT).show();
                 }
             }
         }

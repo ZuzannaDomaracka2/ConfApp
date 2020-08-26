@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">ConfApp</string>
-    <string name="TextView">Zaloguj się</string>
+    <string name="TextView">Sign in</string>
     <string name="ImageView">ic-log</string>
-    <string name="Log_in_Google">Zaloguj przez Google</string>
-    <string name="Log_in_Facebook">Zaloguj przez Facebook</string>
-    <string name="Log_in_GitHub">Zaloguj przez GitHub</string>
-    <string name="Log_in_LinkedIn">Zaloguj przez LinkedIn</string>
-    <string name="Log_out">Wyloguj</string>
+    <string name="Log_in_Google">Sign in with Google</string>
+    <string name="Log_in_Facebook">Sign in with Facebook</string>
+    <string name="Log_in_GitHub">SIgn in with GitHub</string>
+    <string name="Log_out">Log out</string>
+    <string name="app_name_">Conference4me</string>
 
 
     <string name="facebook_app_id">589814271729981</string>
@@ -14,9 +14,7 @@
     <string name="github_app_id">b92a4bfcd7f545a44146</string>
     <string name="github_app_secret">6f0931233b6b6505da752bf1bfc3fe0b50846dc7</string>
     <string name="github_app_url">https://confapp-88132.firebaseapp.com/__/auth/handler</string>
-    <string name="linkedin_app_id">77c6gbjtncoqqj</string>
-    <string name="linkedin_app_secret">mLsHPzmFGU5nFiRy</string>
-    <string name="linkedin_app_url">https://confapp-88132.firebaseapp.com/__/auth/handler</string>
+
 
 
 </resources>
